@@ -44,7 +44,7 @@ The app is built in node js and is in the webserver and the website lives in htt
 ## Caveats (to dos)
 Even though this project shows a functioning app following a lambda architecture, there is still great room for scalability and improvement. On the scalability side of things, more data (all years starting from 1901) and topics can be added to the batch layer. On the improvement side, the speed layer should automatically parse titles and update hbase (and could even make calls to a NYT RSS API), the topics could be further defined to include more terms that define a given topic (e.g. include refugee in the immigration topic), and better related variables could be shown (e.g. number of record temperature setting days per year for climate change).
 
-### Repository structure
+## Repository structure
 This repository's structure is as follows:
 
 ```
