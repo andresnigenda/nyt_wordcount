@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+  <head>
+    <title>Result</title>
+    <link type="text/css" rel="stylesheet" href="table.css" />
+  </head>
+  <body>
+    <div style="margin-left: 22%;margin-right: 0%;display:inline-block;border:1px solid #000000;-moz-border-radius-bottomleft:9px;-webkit-border-bottom-left-radius:9px;border-bottom-left-radius:9px;-moz-border-radius-bottomright:9px;-webkit-border-bottom-right-radius:9px;border-bottom-right-radius:9px;-moz-border-radius-topright:9px;-webkit-border-top-right-radius:9px;border-top-right-radius:9px;-moz-border-radius-topleft:9px;-webkit-border-top-left-radius:9px;border-top-left-radius:9px;font-family:Arial;background:white">
+      &nbsp;Frequency of the topic: "{{topic}}" in NYT article headlines and related variable by decade &nbsp;</div>
+    <p style="bottom-margin:10px">
+      <table class="CSS_Table_Example" style="width:60%;margin:auto;">
+	<tr><td>Decade</td><td>Word Count</td><td>Total Words</td><td>Frequency</td><td>{{value}}</td></tr>
+	{{#row}}<tr><td>{{decade}}</td><td>{{total_word}}</td><td>{{total_word_count}}</td><td>{{frequency}}%</td><td>{{average}}</td>
+	  </tr>{{/row}}
+
+    </table>
+    </p>
+</body></html>
