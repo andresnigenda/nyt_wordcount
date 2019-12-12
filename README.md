@@ -11,43 +11,26 @@ This web app uses data from the NYT [archive API](https://developer.nytimes.com/
 Overall this app is scalable: many more years of data can be added, many more topics and related context data can also be added, and it could receive updates from different APIs to update its views.
 
 ## Data preparation
-First, I downloaded all article data from the NYT by making calls every six seconds (set limit to not be blocked) to the archive API, looping through all months and years from 1901 to 2019, I dropped some irrelevant features to occupy less space on the cluster and I put the files into HDFS as ```hdfs dfs -put /inputs/andresnz_nyt```. This job was done on Python. For the NOAA and DHS data I made direct calls on the cluster ``` wget -0 file_name.csv address``` and then put into HDFS in the ```/inputs/andresnz_temperature``` and ``/inputs/andresnz_immigration``` respectively.
+First, I downloaded all article data from the NYT by making calls every six seconds (set limit to not be blocked) to the archive API, looping through all months and years from 1901 to 2019, I dropped some irrelevant features to occupy less space on the cluster and I put the files into HDFS as ```hdfs dfs -put /inputs/andresnz_nyt```. This job was done on Python. For the NOAA and DHS data I made direct calls on the cluster ``` wget -0 file_name.csv address``` and then put into HDFS in the ```/inputs/andresnz_temperature``` and ```/inputs/andresnz_immigration``` respectively. Then, I put all data tables into hive (see data_tohive.hql). 
+
+I did all of my processing (word count, cleaning, joining) on scala on the spark shell (see details in data_processing.scala). Overall my data processing consisted of:
+1. A word count on NYT article headlines, transforming to lower case, stripping punctuation and removing stop words (with the spark.ml.StopWordsRemover)
+2. Creating a "decade" variable to join all of my tables
+3. Three main dataframe style joins on values aggregated by decade appeared, and also a count of total words by decade
+I wrote my data into hive as ```andresnz_nyt_topics```.
+
+Finally, I moved my hive table into hbase (see data_tohbase.hql).
+
+## Web app
+Fo the web app, I present an interface in which the user can query for the occurence of certain topics on NYT headlines. Each topic shows the topic as word counts and as a percentage of all words in that decade to see how its coverage has evolved along the decades. I also show the evolutio on the same time frames of a relevant tangible variable that is associated with it: average temperature per decade fro climate change and average number of immigrants per decade for immigration. I only show two topics as I had to look for relevant data for each topic and then transform and join the data. Some other relevant topics that I wanted to explore, for example, were abortion, homosexuality, democracy.
+
+The app is built in node js and is in the webserver and the website lives in http://34.66.189.234:3889/nyt-topics.html. It can be launched as ```node app.js``` on ```/home/andresnz/andresnz_nyt_app``` in the webserver.
+
+## Speed layer
+I have two versions of the speed layer. The one that is built with the app and on the webserver is a simple user interface that lives in http://34.66.189.234:3889/submit-counts.html and that allows to show a functioning speed layer. The user interface asks as an input the word count of a title the climate and immigration topics as well as the rest of the words. Admittedly, this version of the speed layer is not well suited for a production app implementation since it asks for the user to input in word counts. However, it shows how the word counts are updated on hbase and then the webapp is updated (see app
 
 
-## Background
-These scripts were used in the analysis for Sunlight Foundation's [Identity, Protections, and Data Coverage: How LGBTQ-related language and content has changed under the Trump Administration](https://sunlightfoundation.com/web-integrity-project/), which looks at how the use of LGBTQ-related terms has changed between the Obama and Trump administrations across federal department websites.
-
-## Methodology
-We pooled together a set of WIP-identified URLs (1) with a set of URLs coming
-from a search of specific terms on the usa.gov search engine (2).
-For each URL, these scripts fetch the latest available IAWM "snapshot" for the "pre" inauguration and "post" inauguration period and count the number of times that a
-set of terms appear in the "visible text" of the webpage.
-
-To analyze the text from our set of web pages these scripts adapt [EDGI’s
-code](https://github.com/ericnost/EDGI) and extend its functionality to
-support sentiment analysis that is tailored to the set of analyzed URLs.
-To compare websites before and after the 2017 inauguration, we rely
-on websites archived on the Internet Archive’s Wayback Machine [IAWM](https://archive.org/web/) website archives.
-
-Read more about the methodology [here](https://sunlightfoundation.com/web-integrity-project/)
-
-## Results
-Our analysis of almost 150 federal government webpages on LGBTQ-related topics, all of which were created before President Trump took office and continue to be live on the web, reveals that, under the Trump administration, federal government webpages addressing LGBTQ-related topics use the terms “gender” and “transgender” more and the terms “sex” less. However, there is considerable variation between departments and within departments.
-
-Our analysis of 1,875 HHS.gov webpages on all topics for LGBTQ-related terms, showed that LGBTQ-related terms are used less often under the Trump administration with a 25% reduction in the use of the term “gender” and a 40% reduction in the use of “transgender.”
-By contrast, the use of terms like “faith-based and community organizations,” “religious freedom,” and “conscience protection” all increased markedly.
-
-Our examination of key case studies of changed LGBTQ-related content on federal agency websites identifies two key trends: 
-1. The removal of access to resources about discrimination protections and prevention, especially for transgender individuals
-2. The removal of resources containing LGBTQ community-specific information
-
-
-**Figure. Absolute Changes by Department, August 2019**
-![Image](https://github.com/sunlightpolicy/lgbtq_trends/blob/master/src/images/fig3.png "Changes by department")
-
-Read more about our results [here](https://sunlightfoundation.com/web-integrity-project/)
-
-## Repository structure
+## File structure
 This repository's structure is as follows:
 
 ```
