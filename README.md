@@ -1,4 +1,4 @@
-# Exploring the occurence of relevant topics on NYT headlines
+# Exploring the occurence of relevant topics on New York Times (NYT) headlines
 Web app developped for Mike Spertus' UChicago MPCS Big Data Applications class.
 
 ## Context
@@ -6,7 +6,12 @@ This web app uses data from the NYT [archive API](https://developer.nytimes.com/
 
 ## How this app is a Big Data app
 - Volume: since this app lives in a cluster, it is able to efficiently handle and process data for posterior querying on NYT headlines from 1901 to 2019. For the sake of space in the class cluster, I limited the timeframe from 1971 to 2019 (50 years).
-- 
+- Velocity: even though there isn't data coming in "fast and furious" (there's just so many articles published per day), the big data stack allows to process new data and recompute views to populate the tables with which the user interacts with
+- Variety: this app takes data from three different data sources and joins them all together, this would have been very messy to handle in a conventional relational database.
+Overall this app is scalable: many more years of data can be added, many more topics and related context data can also be added, and it could receive updates from different APIs to update its views.
+
+## Data preparation
+First, I downloaded all article data from the NYT by making calls every six seconds (set limit to not be blocked) to the archive API, looping through all months and years from 1901 to 2019, I dropped some irrelevant features to occupy less space on the cluster and I put the files into HDFS as ```hdfs dfs -put /inputs/andresnz_nyt```. This job was done on Python. For the NOAA and DHS data I made direct calls on the cluster ``` wget -0 file_name.csv address``` and then put into HDFS in the ```/inputs/andresnz_temperature``` and ``/inputs/andresnz_immigration``` respectively.
 
 
 ## Background
