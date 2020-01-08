@@ -1,6 +1,7 @@
 # Exploring the occurence of relevant topics on New York Times (NYT) headlines
 Web app developped for Mike Spertus' UChicago MPCS Big Data Applications class.
 * Some subdirectories are not in the repo following academic honesty guidelines
+* The app used javascript and scala, and the calls to the NYT API were done on python
 
 ## Context
 This web app uses data from the NYT [archive API](https://developer.nytimes.com/docs/archive-product/1/overview), the [National Oceanic and Atmospheric Administration](https://www.ncdc.noaa.gov/cag/national/time-series/110-tavg-all-1-1901-2019.csv?base_prd=true)(NOAA) and the [US Department of Homeland Security](https://www.dhs.gov/immigration-statistics/refugees-asylees)(DHS) to analyze how certain relevant topics like climate change and immigration have been covered in NYT headlines by decade, and whether this coverage follows observed trends in tangible data (e.g. average atmospheric temperature per decade, average number of new legal immigrants per decade).
